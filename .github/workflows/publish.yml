@@ -1,0 +1,63 @@
+name: Publish to NPM
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "Node.js version to use"
+        required: false
+        type: string
+        default: "22"
+      registry-url:
+        description: "NPM registry URL"
+        required: false
+        type: string
+        default: "https://registry.npmjs.org"
+      pnpm-version:
+        description: "pnpm version to use"
+        required: false
+        type: string
+        default: "latest"
+      upgrade-npm:
+        description: "Whether to upgrade npm to the latest version before publishing"
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      NPM_TOKEN:
+        description: "NPM access token for publishing"
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          registry-url: ${{ inputs.registry-url }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm-version }}
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Upgrade npm to latest version
+        if: ${{ inputs.upgrade-npm }}
+        run: npm install -g npm@latest
+
+      # Using npm publish because pnpm publish has known issues with provenance and token auth
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
