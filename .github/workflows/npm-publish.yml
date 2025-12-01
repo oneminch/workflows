@@ -23,10 +23,6 @@ on:
         required: false
         type: boolean
         default: true
-    secrets:
-      NPM_TOKEN:
-        description: "NPM access token for publishing"
-        required: true
 
 jobs:
   publish:
