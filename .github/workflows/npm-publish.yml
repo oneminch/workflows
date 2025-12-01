@@ -13,11 +13,6 @@ on:
         required: false
         type: string
         default: "https://registry.npmjs.org"
-      pnpm-version:
-        description: "pnpm version to use"
-        required: false
-        type: string
-        default: "latest"
       upgrade-npm:
         description: "Whether to upgrade npm to the latest version before publishing"
         required: false
@@ -42,8 +37,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ inputs.pnpm-version }}
 
       - name: Install dependencies
         run: pnpm install
