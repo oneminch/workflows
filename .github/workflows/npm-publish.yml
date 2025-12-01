@@ -59,5 +59,3 @@ jobs:
       # Using npm publish because pnpm publish has known issues with provenance and token auth
       - name: Publish to NPM
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
