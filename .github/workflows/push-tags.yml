@@ -1,0 +1,19 @@
+name: Push Tags
+
+on:
+  workflow_call:
+
+jobs:
+  push-tags:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Push tags
+        run: git push --follow-tags
