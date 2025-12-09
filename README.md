@@ -17,6 +17,67 @@ A set of reusable GitHub Actions workflows and configuration. They mostly automa
 
 ### Simple
 
+#### Auto Bump Version
+
+```yaml
+name: Auto Patch Version
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  patch:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    uses: oneminch/workflows/.github/workflows/auto-patch.yml@v1
+    permissions:
+      contents: write
+```
+
+#### Push Tags 
+
+```yaml
+name: Push Tags After Dependabot Merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  push-tags:
+    if: |
+      github.event.pull_request.merged == true && 
+      github.event.pull_request.user.login == 'dependabot[bot]'
+    uses: oneminch/workflows/.github/workflows/push-tags.yml@v1
+    permissions:
+      contents: write
+```
+
+#### Publish to NPM (with PNPM) 
+
+```yaml
+name: Publish to NPM
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    permissions:
+      contents: read
+      id-token: write
+    uses: oneminch/workflows/.github/workflows/npm-publish.yml@v1
+```
+
+### Alternative
+
 ```yaml
 name: Patch & Tag
 
@@ -24,6 +85,7 @@ on:
   pull_request:
     types: [opened, closed]
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   patch:
@@ -51,6 +113,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -59,62 +122,3 @@ jobs:
       id-token: write
     uses: oneminch/workflows/.github/workflows/npm-publish.yml@v1
 ```
-
-### Alternative
-
-#### Auto Bump Version
-
-```yaml
-name: Auto Patch Version
-
-on:
-  pull_request:
-    types: [opened]
-    branches: [main]
-
-jobs:
-  patch:
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
-    uses: oneminch/workflows/.github/workflows/auto-patch.yml@v1
-    permissions:
-      contents: write
-```
-
-#### Push Tags 
-
-```yaml
-name: Push Tags After Dependabot Merge
-
-on:
-  pull_request:
-    types: [closed]
-    branches: [main]
-
-jobs:
-  push-tags:
-    if: |
-      github.event.pull_request.merged == true && 
-      github.event.pull_request.user.login == 'dependabot[bot]'
-    uses: oneminch/workflows/.github/workflows/push-tags.yml@v1
-    permissions:
-      contents: write
-```
-
-#### Publish to NPM (with PNPM) 
-
-```yaml
-name: Publish to NPM
-
-on:
-  push:
-    tags:
-      - 'v*'
-
-jobs:
-  publish:
-    permissions:
-      contents: read
-      id-token: write
-    uses: oneminch/workflows/.github/workflows/npm-publish.yml@v1
-```
-
