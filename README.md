@@ -2,7 +2,7 @@
 
 A set of reusable GitHub Actions workflows and configuration. They mostly automate working with dependency updates with Dependabot.
 
-- [`.github/workflows/auto-bump-version.yml`](.github/workflows/auto-bump-version.yml)
+- [`.github/workflows/auto-patch.yml`](.github/workflows/auto-patch.yml)
   - Bumps package version automatically from within a dependency update PR created by Dependabot.
 - [`.github/workflows/push-tags.yml`](.github/workflows/push-tags.yml)
   - Pushes tags after merging Dependabot PRs.
@@ -15,10 +15,10 @@ A set of reusable GitHub Actions workflows and configuration. They mostly automa
 
 ## Usage
 
-### Single File 
+### Simple
 
 ```yaml
-name: Bump & Tag
+name: Patch & Tag
 
 on:
   pull_request:
@@ -26,18 +26,16 @@ on:
     branches: [main]
 
 jobs:
-  bump-version:
+  patch:
     if: |
-      github.event_name == 'pull_request' &&
       github.event.action == 'opened' && 
       github.event.pull_request.user.login == 'dependabot[bot]'
-    uses: oneminch/workflows/.github/workflows/auto-bump-version.yml@v1
+    uses: oneminch/workflows/.github/workflows/auto-patch.yml@v1
     permissions:
       contents: write
   
   push-tags:
     if: |
-      github.event_name == 'pull_request' &&
       github.event.action == 'closed' && 
       github.event.pull_request.merged == true && 
       github.event.pull_request.user.login == 'dependabot[bot]'
@@ -67,7 +65,7 @@ jobs:
 #### Auto Bump Version
 
 ```yaml
-name: Auto Version Bump
+name: Auto Patch Version
 
 on:
   pull_request:
@@ -75,9 +73,9 @@ on:
     branches: [main]
 
 jobs:
-  bump-version:
+  patch:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
-    uses: oneminch/workflows/.github/workflows/auto-bump-version.yml@v1
+    uses: oneminch/workflows/.github/workflows/auto-patch.yml@v1
     permissions:
       contents: write
 ```

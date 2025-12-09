@@ -1,61 +1,61 @@
-name: Auto Version Bump
+name: Auto Patch
 
 on:
   workflow_call:
     inputs:
       node-version:
-        description: "Node.js version to use"
+        description: 'Node.js version to use'
         required: false
         type: string
-        default: "22"
+        default: '22'
       version-type:
-        description: "Version bump type (patch, minor, major)"
+        description: 'Version bump type (patch, minor, major)'
         required: false
         type: string
-        default: "patch"
+        default: 'patch'
       commit-message:
-        description: "Commit message template (use %s for version placeholder)"
+        description: 'Commit message template (use %s for version placeholder)'
         required: false
         type: string
-        default: "chore: release %s"
+        default: 'chore: release %s'
       git-user-name:
-        description: "Git user name for commits"
+        description: 'Git user name for commits'
         required: false
         type: string
-        default: "github-actions[bot]"
+        default: 'github-actions[bot]'
       git-user-email:
-        description: "Git user email for commits"
+        description: 'Git user email for commits'
         required: false
         type: string
-        default: "github-actions[bot]@users.noreply.github.com"
+        default: 'github-actions[bot]@users.noreply.github.com'
 
 jobs:
   bump-version:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-      
+
       - name: Configure Git
         run: |
           git config user.name "${{ inputs.git-user-name }}"
           git config user.email "${{ inputs.git-user-email }}"
-      
+
       - name: Bump version
         run: pnpm version ${{ inputs.version-type }} -m "${{ inputs.commit-message }}"
-      
+
       - name: Push to PR branch
         run: git push origin ${{ github.event.pull_request.head.ref }}

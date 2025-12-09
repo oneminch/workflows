@@ -4,17 +4,17 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: "Node.js version to use"
+        description: 'Node.js version to use'
         required: false
         type: string
-        default: "22"
+        default: '22'
       registry-url:
-        description: "NPM registry URL"
+        description: 'NPM registry URL'
         required: false
         type: string
-        default: "https://registry.npmjs.org"
+        default: 'https://registry.npmjs.org'
       upgrade-npm:
-        description: "Whether to upgrade npm to the latest version before publishing"
+        description: 'Whether to upgrade npm to the latest version before publishing'
         required: false
         type: boolean
         default: true
