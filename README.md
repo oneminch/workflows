@@ -1,6 +1,6 @@
 # Workflows
 
-A set of reusable GitHub Actions workflows and configuration.
+A set of GitHub Actions workflows and configuration I use across my projects.
 
 - [`.github/workflows/auto-patch.yml`](.github/workflows/auto-patch.yml)
   - Bumps package version automatically from within a dependency update PR created by Dependabot.
@@ -89,6 +89,9 @@ on:
 
 jobs:
   deploy:
+    permissions:
+      pages: write
+      id-token: write
     uses: oneminch/workflows/.github/workflows/gh-pages-deploy.yml@v1
     # with:
     #   node-version: '22'
