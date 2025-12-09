@@ -24,9 +24,18 @@ on:
         required: false
         type: string
         default: './.output/public'
+      skip-dependabot-prs:
+        description: 'Skip deployment for Dependabot PRs'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
+    if: |
+      !(${{ inputs.skip-dependabot-prs }} && 
+        github.event_name == 'pull_request' && 
+        github.event.pull_request.user.login == 'dependabot[bot]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
