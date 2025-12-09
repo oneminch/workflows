@@ -1,6 +1,6 @@
 # Workflows
 
-A set of reusable GitHub Actions workflows and configuration. They mostly automate working with dependency updates with Dependabot.
+A set of reusable GitHub Actions workflows and configuration.
 
 - [`.github/workflows/auto-patch.yml`](.github/workflows/auto-patch.yml)
   - Bumps package version automatically from within a dependency update PR created by Dependabot.
@@ -9,15 +9,15 @@ A set of reusable GitHub Actions workflows and configuration. They mostly automa
   - Triggers the [`npm-publish.yml`](.github/workflows/npm-publish.yml) workflow if used.
 - [`.github/workflows/npm-publish.yml`](.github/workflows/npm-publish.yml)
   - Triggered by pushed tags.
-- [`.github/dependabot-bimonthly-updates.yml`](.github/dependabot-bimonthly-updates.yml)
+- [`.github/workflows/gh-pages-deploy.yml`](.github/workflows/gh-pages-deploy.yml)
+  - Triggered by all push events to `main`.
+- [`.github/dependabot-regular-updates.yml`](.github/dependabot-regular-updates.yml)
   - Dependabot bimonthly updates.
 
 
 ## Usage
 
-### Simple
-
-#### Auto Bump Version
+### Auto Bump Version
 
 ```yaml
 name: Auto Patch Version
@@ -36,7 +36,7 @@ jobs:
       contents: write
 ```
 
-#### Push Tags 
+### Push Tags 
 
 ```yaml
 name: Push Tags After Dependabot Merge
@@ -57,7 +57,7 @@ jobs:
       contents: write
 ```
 
-#### Publish to NPM (with PNPM) 
+### Publish to NPM (with PNPM) 
 
 ```yaml
 name: Publish to NPM
@@ -76,7 +76,27 @@ jobs:
     uses: oneminch/workflows/.github/workflows/npm-publish.yml@v1
 ```
 
-### Alternative
+### Deploy to GitHub Pages
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    uses: oneminch/workflows/.github/workflows/gh-pages-deploy.yml@v1
+    # with:
+    #   node-version: '22'
+    #   build-command: 'pnpm run build --preset github_pages'
+    #   artifact-path: './.output/public'
+```
+
+### Alternative (Patch & Tag)
 
 ```yaml
 name: Patch & Tag
@@ -104,21 +124,4 @@ jobs:
     uses: oneminch/workflows/.github/workflows/push-tags.yml@v1
     permissions:
       contents: write
-```
-
-```yaml
-name: Publish to NPM
-
-on:
-  push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
-
-jobs:
-  publish:
-    permissions:
-      contents: read
-      id-token: write
-    uses: oneminch/workflows/.github/workflows/npm-publish.yml@v1
 ```
