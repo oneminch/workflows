@@ -14,6 +14,11 @@ on:
         required: false
         type: string
         default: 'pnpm run build --preset github_pages'
+      working-directory:
+        description: 'Which path to start build step from'
+        required: false
+        type: string
+        default: './'
       artifact-path:
         description: 'Path to the artifact to upload'
         required: false
@@ -53,6 +58,7 @@ jobs:
 
       - name: Build
         run: ${{ inputs.build-command }}
+        working-directory: ${{ inputs.working-directory }}
         # env:
         #   NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
 
