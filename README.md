@@ -12,7 +12,7 @@ A set of GitHub Actions workflows and configuration I use across my projects.
 - [`.github/workflows/gh-pages-deploy.yml`](.github/workflows/gh-pages-deploy.yml)
   - Triggered by all push events to `main`.
 - [`.github/dependabot-regular-updates.yml`](.github/dependabot-regular-updates.yml)
-  - Dependabot bimonthly updates.
+  - Dependabot regular updates.
 
 
 ## Usage
