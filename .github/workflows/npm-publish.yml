@@ -7,7 +7,7 @@ on:
         description: 'Node.js version to use'
         required: false
         type: string
-        default: '22'
+        default: '24'
       registry-url:
         description: 'NPM registry URL'
         required: false
@@ -36,7 +36,7 @@ jobs:
           registry-url: ${{ inputs.registry-url }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/action-setup@v6
 
       - name: Install dependencies
         run: pnpm install

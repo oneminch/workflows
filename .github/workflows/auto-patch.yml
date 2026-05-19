@@ -7,7 +7,7 @@ on:
         description: 'Node.js version to use'
         required: false
         type: string
-        default: '22'
+        default: '24'
       version-type:
         description: 'Version bump type (patch, minor, major)'
         required: false
@@ -17,7 +17,7 @@ on:
         description: 'Commit message template (use %s for version placeholder)'
         required: false
         type: string
-        default: 'chore: release %s'
+        default: 'chore: release v%s'
       git-user-name:
         description: 'Git user name for commits'
         required: false
@@ -47,7 +47,7 @@ jobs:
           node-version: ${{ inputs.node-version }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/action-setup@v6
 
       - name: Configure Git
         run: |
