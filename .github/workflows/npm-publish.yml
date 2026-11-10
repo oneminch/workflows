@@ -3,26 +3,16 @@ name: Publish to NPM
 on:
   workflow_call:
     inputs:
-      working-directory:
-        description: 'Which path to run install and publish from'
+      package-filter:
+        description: 'Optional pnpm selector for monorepos, e.g. @scope/pkg or ./packages/pkg. Leave empty for single-package repos.'
         required: false
         type: string
-        default: './'
+        default: ''
       node-version:
         description: 'Node.js version to use'
         required: false
         type: string
         default: '24'
-      registry-url:
-        description: 'NPM registry URL'
-        required: false
-        type: string
-        default: 'https://registry.npmjs.org'
-      upgrade-npm:
-        description: 'Whether to upgrade npm to the latest version before publishing'
-        required: false
-        type: boolean
-        default: true
 
 jobs:
   publish:
@@ -32,26 +22,20 @@ jobs:
       id-token: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Setup pnpm and Node.js
+        uses: pnpm/setup@v3
         with:
-          node-version: ${{ inputs.node-version }}
-          registry-url: ${{ inputs.registry-url }}
+          runtime: node@${{ inputs.node-version }}
+          cache: true
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: ${{ inputs.working-directory }}
-
-      - name: Upgrade npm to latest version
-        if: ${{ inputs.upgrade-npm }}
-        run: npm install -g npm@latest
-
-      # Using npm publish because pnpm publish has known issues with provenance and token auth
       - name: Publish to NPM
-        run: npm publish
-        working-directory: ${{ inputs.working-directory }}
+        env:
+          PACKAGE_FILTER: ${{ inputs.package-filter }}
+        run: |
+          if [ -n "$PACKAGE_FILTER" ]; then
+            pnpm publish --filter "$PACKAGE_FILTER" --provenance
+          else
+            pnpm publish --provenance
+          fi
