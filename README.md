@@ -74,6 +74,9 @@ jobs:
       contents: read
       id-token: write
     uses: oneminch/workflows/.github/workflows/npm-publish.yml@v1
+    # with:
+    #   working-directory: './packages/my-package'
+    #   node-version: '24'
 ```
 
 ### Deploy to GitHub Pages
