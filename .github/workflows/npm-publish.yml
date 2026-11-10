@@ -3,6 +3,11 @@ name: Publish to NPM
 on:
   workflow_call:
     inputs:
+      working-directory:
+        description: 'Which path to run install and publish from'
+        required: false
+        type: string
+        default: './'
       node-version:
         description: 'Node.js version to use'
         required: false
@@ -40,6 +45,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        working-directory: ${{ inputs.working-directory }}
 
       - name: Upgrade npm to latest version
         if: ${{ inputs.upgrade-npm }}
@@ -48,3 +54,4 @@ jobs:
       # Using npm publish because pnpm publish has known issues with provenance and token auth
       - name: Publish to NPM
         run: npm publish
+        working-directory: ${{ inputs.working-directory }}
